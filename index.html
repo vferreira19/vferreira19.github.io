@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vitor Ferreira — Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 2rem;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .resume-root {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .prompt { color: #3fb950; }
+    .at { color: #58a6ff; }
+    .tilde { color: #f78166; }
+    .string { color: #a5d6ff; }
+    .keyword { color: #ff7b72; }
+    .func { color: #d2a8ff; }
+    .muted { color: #6e7681; }
+    .bright { color: #e6edf3; }
+    .green { color: #3fb950; }
+    .yellow { color: #e3b341; }
+    .blue { color: #58a6ff; }
+    .pink { color: #f778ba; }
+    .comment { color: #484f58; }
+
+    .header-bar {
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #f78166; }
+    .dot-yellow { background: #e3b341; }
+    .dot-green { background: #3fb950; }
+
+    .name-line {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+
+    .title-line {
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .contact-line {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+    }
+
+    .contact-item { color: #58a6ff; text-decoration: none; }
+    .contact-item:hover { text-decoration: underline; }
+
+    .section { margin-bottom: 1.8rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      font-size: 12px;
+    }
+
+    .section-header::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #21262d;
+    }
+
+    .job {
+      margin-bottom: 1.2rem;
+      padding-left: 16px;
+      border-left: 2px solid #21262d;
+    }
+
+    .job:hover { border-left-color: #3fb950; }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .job-title { color: #e6edf3; font-weight: 500; font-size: 13px; }
+    .job-company { color: #58a6ff; }
+    .job-date { color: #6e7681; font-size: 12px; }
+    .job-location { color: #484f58; font-size: 11px; }
+
+    .job-bullets { margin: 6px 0 0 0; padding: 0; list-style: none; }
+    .job-bullets li { padding: 2px 0; font-size: 12px; color: #8b949e; }
+    .job-bullets li::before { content: '▸ '; color: #3fb950; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .skill-group {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 4px;
+      padding: 10px 12px;
+    }
+
+    .skill-group-label {
+      font-size: 10px;
+      color: #6e7681;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+
+    .tag-lang { color: #d2a8ff; border-color: #3d2b7a; background: #1a0f3a; }
+    .tag-fw   { color: #79c0ff; border-color: #0d4f8c; background: #0a1f36; }
+    .tag-db   { color: #56d364; border-color: #0e4424; background: #051c0a; }
+    .tag-tool { color: #e3b341; border-color: #5c4500; background: #211500; }
+
+    .project-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 4px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+
+    .project-card:hover { border-color: #3fb950; }
+    .project-name { color: #e6edf3; font-weight: 500; }
+    .project-desc { color: #8b949e; font-size: 12px; margin-top: 4px; }
+    .project-tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+    .edu-block { padding-left: 16px; border-left: 2px solid #21262d; }
+
+    .print-btn {
+      display: block;
+      margin: 0 0 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid #3fb950;
+      color: #3fb950;
+      cursor: pointer;
+      border-radius: 3px;
+      float: right;
+    }
+    .print-btn:hover { background: #0e3620; }
+
+    .footer-line {
+      text-align: right;
+      margin-top: 1.5rem;
+      font-size: 11px;
+      color: #484f58;
+    }
+
+    @media print {
+      body { background: #fff; color: #111; padding: 1rem; }
+      .dot, .print-btn, .window-dots { display: none; }
+      .prompt { color: #090; }
+      .at, .contact-item, .job-company { color: #00f; }
+      .string { color: #009; }
+      .keyword { color: #c00; }
+      .func { color: #60c; }
+      .muted, .job-date { color: #777; }
+      .bright, .name-line, .job-title, .project-name { color: #000; }
+      .green { color: #090; }
+      .yellow { color: #7c4a00; }
+      .section-header::after { background: #ddd; }
+      .job { border-left-color: #ccc; }
+      .skill-group { background: #f9f9f9; border-color: #ddd; }
+      .project-card { background: #f9f9f9; border-color: #ddd; }
+      .tag-lang { color: #5a2d82; border-color: #bbb; background: #f3eeff; }
+      .tag-fw   { color: #0046ad; border-color: #bbb; background: #eef3ff; }
+      .tag-db   { color: #1a6b2a; border-color: #bbb; background: #efffef; }
+      .tag-tool { color: #7c4a00; border-color: #bbb; background: #fffbef; }
+      .job-bullets li { color: #333; }
+      .job-location, .comment { color: #888; }
+      .project-desc { color: #444; }
+      .footer-line { color: #aaa; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      .job-header { flex-direction: column; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="resume-root">
+
+  <button class="print-btn" onclick="window.print()">⎙ print / save as pdf</button>
+
+  <div class="header-bar">
+    <div class="window-dots">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+    </div>
+    <div class="muted" style="font-size:11px; margin-bottom:10px;">
+      <span class="prompt">vitor</span><span class="muted">@</span><span class="at">dev</span><span class="muted">:</span><span class="tilde">~</span><span class="muted">$</span>
+      <span class="string"> cat</span> <span class="keyword">resume.json</span>
+    </div>
+    <div class="name-line">Vitor Ferreira</div>
+    <div class="title-line">
+      <span class="func">Full-Stack</span> <span class="muted">/</span> <span class="func">.NET Developer</span>
+      <span class="muted"> · </span><span class="yellow">Havant, Hampshire, UK</span>
+    </div>
+    <div class="contact-line">
+      <span class="muted">// </span>
+      <a class="contact-item" href="https://www.linkedin.com/in/vitor-ferreira-746972263/" target="_blank">linkedin.com/in/vitor-ferreira</a>
+      <span class="muted">·</span>
+      <span class="contact-item">github.com/vitorferreira</span>
+      <span class="muted">·</span>
+      <span class="contact-item">vitor@email.com</span>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="section">
+    <div class="section-header">
+      <span class="prompt">$</span> <span class="keyword">cat</span> <span class="string">about.md</span>
+    </div>
+    <div style="color:#8b949e; font-size:12px; padding-left:16px; border-left:2px solid #21262d; line-height:1.8;">
+      Computing graduate and full-stack developer with 1+ year of professional experience building
+      enterprise software at Blueteq. Background in <span class="green">.NET</span>, <span class="blue">clean architecture</span>, and <span class="pink">Web APIs</span>.
+      Proven track record of delivering under pressure across 10 years of customer-facing and operational
+      roles — bringing reliability, communication, and a strong work ethic to every team.
+    </div>
+  </div>
+
+  <!-- Experience -->
+  <div class="section">
+    <div class="section-header">
+      <span class="prompt">$</span> <span class="keyword">git</span> <span class="string">log --oneline</span> <span class="comment"># experience</span>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <div>
+          <span class="job-title">Software Developer</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">Blueteq</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">Jan 2024 – Present</div>
+          <div class="job-location">Havant, UK</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Building and maintaining enterprise .NET applications using C#, VB, and .NET Core with clean architecture principles</li>
+        <li>Developing and consuming RESTful Web APIs integrated with MSSQL databases</li>
+        <li>Maintaining legacy .NET WebForms systems while migrating components to modern architecture</li>
+        <li>Collaborating in a professional dev team using Git for version control and code review workflows</li>
+        <li>Contributing to full software lifecycle: design, development, testing and deployment</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <div>
+          <span class="job-title">Delivery Driver</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">Domino's Pizza</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">2019 – 2025</div>
+          <div class="job-location">Portsmouth, UK</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Managed time-critical logistics across high-volume shifts while studying full-time for a Computing degree</li>
+        <li>Demonstrated reliability and composure under pressure over 6 years of consistent employment</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <div>
+          <span class="job-title">Receptionist / Front of House</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">Hotel Pestana</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">Summer 2019</div>
+          <div class="job-location">Portugal</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Guest-facing role in a fast-paced hospitality environment — strong communication and problem-solving under pressure</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <div>
+          <span class="job-title">Receptionist</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">Hotel Casino Chaves</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">Summer 2018</div>
+          <div class="job-location">Portugal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <div>
+          <span class="job-title">Waiter</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">Rei dos Cachorros</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">2017 – 2019</div>
+          <div class="job-location">Portugal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <div>
+          <span class="job-title">Civil Construction Worker</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">Construction (Seasonal)</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">Summer 2016</div>
+          <div class="job-location">Switzerland</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="section">
+    <div class="section-header">
+      <span class="prompt">$</span> <span class="keyword">ls</span> <span class="string">./skills/</span>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-label">Languages</div>
+        <div class="skill-tags">
+          <span class="tag tag-lang">C#</span>
+          <span class="tag tag-lang">VB.NET</span>
+          <span class="tag tag-lang">JavaScript</span>
+          <span class="tag tag-lang">SQL</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Frameworks & Platforms</div>
+        <div class="skill-tags">
+          <span class="tag tag-fw">.NET Core</span>
+          <span class="tag tag-fw">.NET WebForms</span>
+          <span class="tag tag-fw">Web APIs</span>
+          <span class="tag tag-fw">REST</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Architecture & DB</div>
+        <div class="skill-tags">
+          <span class="tag tag-db">Clean Architecture</span>
+          <span class="tag tag-db">MSSQL</span>
+          <span class="tag tag-db">SOLID</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Tools</div>
+        <div class="skill-tags">
+          <span class="tag tag-tool">Git</span>
+          <span class="tag tag-tool">Visual Studio</span>
+          <span class="tag tag-tool">VS Code</span>
+          <span class="tag tag-tool">Postman</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects -->
+  <div class="section">
+    <div class="section-header">
+      <span class="prompt">$</span> <span class="keyword">ls</span> <span class="string">./projects/</span>
+    </div>
+
+    <div class="project-card">
+      <div class="project-name">AR Booking System <span class="muted">— Final Year Project</span></div>
+      <div class="project-desc">An augmented reality application built to enhance customer service experiences through real-time insights and spatial interaction. Integrated AR overlays with a live booking data layer to provide staff with contextual, on-demand information.</div>
+      <div class="project-tags">
+        <span class="tag tag-lang">AR</span>
+        <span class="tag tag-fw">Real-time data</span>
+        <span class="tag tag-fw">Booking system</span>
+        <span class="tag tag-db">Customer UX</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-name">Business Booking System API</div>
+      <div class="project-desc">RESTful API designed for managing business bookings — handling authentication, resource scheduling, and data persistence. Built with clean separation of concerns and documented endpoints.</div>
+      <div class="project-tags">
+        <span class="tag tag-lang">C#</span>
+        <span class="tag tag-fw">Web API</span>
+        <span class="tag tag-db">MSSQL</span>
+        <span class="tag tag-tool">REST</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-name">Console Smart Home Software</div>
+      <div class="project-desc">A console-based smart home control system simulating IoT device management — allowing users to monitor and control virtual devices through a structured command interface.</div>
+      <div class="project-tags">
+        <span class="tag tag-lang">C#</span>
+        <span class="tag tag-fw">OOP</span>
+        <span class="tag tag-db">IoT simulation</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Education -->
+  <div class="section">
+    <div class="section-header">
+      <span class="prompt">$</span> <span class="keyword">cat</span> <span class="string">education.md</span>
+    </div>
+    <div class="edu-block">
+      <div class="job-header">
+        <div>
+          <span class="job-title">BSc Computing</span>
+          <span class="muted"> @ </span>
+          <span class="job-company">University of Portsmouth</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="job-date">Graduated July 2024</div>
+          <div class="job-location">Portsmouth, UK</div>
+        </div>
+      </div>
+      <ul class="job-bullets">
+        <li>Final year project: AR Booking System — real-time augmented reality applied to customer service</li>
+        <li>Modules covering software engineering, databases, web development, and systems design</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-line">
+    <span class="prompt">vitor</span><span class="muted">@dev:~$</span> <span class="string">echo</span> <span class="yellow">"Available for full-stack roles"</span><br>
+    <span class="green">▸ Available for full-stack roles</span>
+  </div>
+
+</div>
+</body>
+</html>
