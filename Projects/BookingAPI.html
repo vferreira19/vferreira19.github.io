@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Booking API</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --border: #21262d;
+    --text: #c9d1d9;
+    --muted: #6e7681;
+    --green: #3fb950;
+    --blue: #58a6ff;
+    --purple: #d2a8ff;
+    --red: #ff7b72;
+    --yellow: #e3b341;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  .window {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .window-chrome {
+    background: #1c2128;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+
+  .window-title {
+    flex: 1;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .window-body { padding: 24px; }
+
+  .cmd { color: var(--green); }
+  .cmd::before { content: '$ '; }
+
+  .section-header {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .section-header .cmd { font-size: 15px; color: var(--green); display: block; margin-bottom: 4px; }
+
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo { color: var(--green); font-size: 13px; font-weight: 700; }
+  .nav-logo span { color: var(--muted); }
+
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a { color: var(--muted); font-size: 12px; }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+  section { padding: 64px 0; }
+
+  .hero { padding: 80px 0 64px; }
+
+  .hero-window .window-body { padding: 32px; }
+
+  .hero-prompt { margin-bottom: 24px; }
+  .hero-prompt .line { margin-bottom: 8px; }
+  .hero-prompt .line .cmd-prefix { color: var(--green); }
+  .hero-prompt .line .cmd-text { color: var(--text); }
+
+  .hero-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .hero-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+    max-width: 600px;
+  }
+
+  .hero-subtitle span { color: var(--yellow); }
+
+  .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: #0d1117;
+    border-color: var(--green);
+    font-weight: 700;
+  }
+
+  .btn-primary:hover { background: #45c858; text-decoration: none; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+  }
+
+  .btn-secondary:hover { background: var(--bg-card); text-decoration: none; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  .stat-value { font-size: 24px; font-weight: 700; color: var(--green); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .feature-card:hover { border-color: var(--green); }
+
+  .feature-icon { color: var(--purple); font-size: 18px; margin-bottom: 12px; }
+  .feature-title { color: var(--text); font-weight: 700; margin-bottom: 8px; font-size: 13px; }
+  .feature-desc { color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+  .endpoints-list { list-style: none; }
+
+  .endpoint-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 6px;
+    transition: border-color 0.2s;
+  }
+
+  .endpoint-item:hover { border-left-color: var(--green); }
+
+  .method {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    min-width: 48px;
+    text-align: center;
+  }
+
+  .method-get { background: rgba(88, 166, 255, 0.15); color: var(--blue); }
+  .method-post { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+  .method-put { background: rgba(227, 179, 65, 0.15); color: var(--yellow); }
+  .method-delete { background: rgba(255, 123, 114, 0.15); color: var(--red); }
+
+  .endpoint-path { color: var(--text); font-size: 13px; }
+  .endpoint-desc { color: var(--muted); font-size: 12px; margin-left: auto; }
+
+  .role-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+
+  .role-dev { background: rgba(210, 168, 255, 0.15); color: var(--purple); }
+  .role-owner { background: rgba(227, 179, 65, 0.15); color: var(--yellow); }
+  .role-user { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+  .role-all { background: rgba(198, 209, 217, 0.15); color: var(--muted); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .pricing-card:hover { border-color: var(--green); }
+  .pricing-card.featured { border-color: var(--green); }
+
+  .pricing-badge {
+    font-size: 11px;
+    color: #0d1117;
+    background: var(--green);
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .plan-name { color: var(--purple); font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+  .plan-price { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .plan-price span { font-size: 14px; color: var(--muted); font-weight: 400; }
+  .plan-requests { color: var(--yellow); font-size: 12px; margin-bottom: 16px; }
+
+  .plan-features { list-style: none; }
+  .plan-features li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-features li::before { content: '+ '; color: var(--green); }
+  .plan-features li:last-child { border-bottom: none; }
+
+  .plan-btn {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    background: transparent;
+    width: 100%;
+    transition: all 0.2s;
+  }
+
+  .plan-btn:hover { border-color: var(--green); color: var(--green); }
+  .plan-btn.featured-btn { border-color: var(--green); color: var(--green); }
+
+  .onboarding-steps { list-style: none; }
+
+  .onboarding-step {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .onboarding-step:last-child { border-bottom: none; }
+
+  .step-num {
+    color: var(--green);
+    font-weight: 700;
+    min-width: 24px;
+    font-size: 13px;
+  }
+
+  .step-content {}
+  .step-title { color: var(--text); font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .step-desc { color: var(--muted); font-size: 12px; }
+  .step-desc code { color: var(--blue); background: rgba(88, 166, 255, 0.1); padding: 1px 6px; border-radius: 2px; }
+
+  .code-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 16px;
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    font-size: 12px;
+    color: var(--text);
+    white-space: pre;
+  }
+
+  .code-comment { color: var(--muted); }
+  .code-key { color: var(--blue); }
+  .code-value { color: var(--green); }
+  .code-string { color: var(--yellow); }
+
+  .flow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    align-items: center;
+  }
+
+  .flow-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px;
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .flow-step .role { color: var(--purple); font-weight: 700; margin-bottom: 4px; }
+  .flow-step .action { color: var(--muted); }
+  .flow-arrow { text-align: center; color: var(--green); font-size: 18px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-links { display: flex; gap: 24px; }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .two-col { grid-template-columns: 1fr; }
+    .endpoint-desc { display: none; }
+    .nav-links { display: none; }
+    .hero-title { font-size: 22px; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; font-family: Arial, sans-serif; }
+    nav { display: none; }
+    .window { background: #f8f8f8; border: 1px solid #ddd; }
+    .window-chrome { background: #eee; border-bottom: 1px solid #ddd; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green { background: #28c840; }
+    .window-title { color: #666; }
+    .cmd { color: #1a7f37; }
+    .section-header .cmd { color: #1a7f37; }
+    .hero-title { color: #6e40c9; }
+    .hero-subtitle { color: #555; }
+    .hero-subtitle span { color: #9a6700; }
+    .stat-card { background: #f0f0f0; border-color: #ddd; }
+    .stat-value { color: #1a7f37; }
+    .stat-label { color: #666; }
+    .feature-card { background: #f8f8f8; border-color: #ddd; }
+    .feature-icon { color: #6e40c9; }
+    .feature-title { color: #000; }
+    .feature-desc { color: #555; }
+    .endpoint-item { border-left-color: #ddd; }
+    .method-get { background: #dbeafe; color: #1d4ed8; }
+    .method-post { background: #dcfce7; color: #15803d; }
+    .method-put { background: #fef9c3; color: #854d0e; }
+    .method-delete { background: #fee2e2; color: #991b1b; }
+    .endpoint-path { color: #000; }
+    .endpoint-desc { color: #555; }
+    .role-dev { background: #ede9fe; color: #6d28d9; }
+    .role-owner { background: #fef9c3; color: #854d0e; }
+    .role-user { background: #dcfce7; color: #15803d; }
+    .role-all { background: #f3f4f6; color: #555; }
+    .pricing-card { background: #f8f8f8; border-color: #ddd; }
+    .plan-name { color: #6e40c9; }
+    .plan-price { color: #000; }
+    .plan-requests { color: #9a6700; }
+    .plan-features li { color: #555; border-bottom-color: #eee; }
+    .plan-features li::before { color: #1a7f37; }
+    .code-block { background: #f0f0f0; border-color: #ddd; }
+    .code-block pre { color: #000; }
+    .code-comment { color: #666; }
+    .code-key { color: #1d4ed8; }
+    .code-value { color: #15803d; }
+    .code-string { color: #9a6700; }
+    .flow-step { background: #f0f0f0; border-color: #ddd; }
+    .flow-step .role { color: #6e40c9; }
+    .flow-step .action { color: #555; }
+    .flow-arrow { color: #1a7f37; }
+    .onboarding-step { border-bottom-color: #eee; }
+    .step-title { color: #000; }
+    .step-desc { color: #555; }
+    .step-desc code { color: #1d4ed8; background: #dbeafe; }
+    .section-divider { border-top-color: #ddd; }
+    footer { border-top-color: #ddd; color: #555; }
+    .btn { display: none; }
+    .plan-btn { display: none; }
+    a { color: #1d4ed8; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="nav-logo">business-booking-api<span>.io</span></div>
+    <div class="nav-links">
+      <a href="#features">features</a>
+      <a href="#endpoints">endpoints</a>
+      <a href="#pricing">pricing</a>
+      <a href="#quickstart">quickstart</a>
+      <a href="https://rapidapi.com" target="_blank">rapidapi</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="window hero-window">
+      <div class="window-chrome">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <div class="window-title">business-booking-api ~ terminal</div>
+      </div>
+      <div class="window-body">
+        <div class="hero-prompt">
+          <div class="line"><span class="cmd-prefix">$ </span><span class="cmd-text">curl -X GET https://businessbookingapi.up.railway.app/api/Booking \</span></div>
+          <div class="line" style="padding-left:16px; color: var(--muted);">-H "Authorization: Bearer &lt;your_token&gt;"</div>
+          <div class="line" style="margin-top:8px; color: var(--green);">✓ 200 OK — 3 bookings returned in 42ms</div>
+        </div>
+        <h1 class="hero-title">Business Booking API</h1>
+        <p class="hero-subtitle">A developer-first REST API for managing <span>bookings, businesses, services</span> and <span>availability</span>. Ship faster. Focus on your front end.</p>
+        <div class="hero-buttons">
+          <a href="https://rapidapi.com" target="_blank" class="btn btn-primary">$ subscribe --plan basic</a>
+          <a href="#quickstart" class="btn btn-secondary">$ cat quickstart.md</a>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">20+</div>
+            <div class="stat-label">endpoints</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">3</div>
+            <div class="stat-label">role levels</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">JWT</div>
+            <div class="stat-label">authentication</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">99.9%</div>
+            <div class="stat-label">uptime target</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="cmd">ls ./features/</span>
+      <span>everything you need to build a booking system</span>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">//</div>
+        <div class="feature-title">multi-business management</div>
+        <div class="feature-desc">Manage unlimited businesses under a single Developer account. Each business is fully isolated — bookings, services and users are scoped automatically.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">//</div>
+        <div class="feature-title">smart booking validation</div>
+        <div class="feature-desc">Built-in overlap detection, business hours checking and service availability validation. Bad data never reaches your database.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">//</div>
+        <div class="feature-title">role-based access control</div>
+        <div class="feature-desc">Three role levels — Developer, BusinessOwner and User — each with carefully scoped permissions. No overprivileged tokens.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">//</div>
+        <div class="feature-title">business hours engine</div>
+        <div class="feature-desc">Set opening and closing times per day of the week. Mark days as closed. The API enforces these rules on every booking attempt automatically.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">//</div>
+        <div class="feature-title">service configuration</div>
+        <div class="feature-desc">Define services with custom names, pricing and durations. Duration is used by the booking engine to calculate slot availability and prevent overlap.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">//</div>
+        <div class="feature-title">booking lifecycle</div>
+        <div class="feature-desc">Full booking lifecycle support — create, confirm and cancel. Status tracking built in. Business Owners can confirm or cancel. Customers can cancel their own.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="endpoints">
+  <div class="container">
+    <div class="section-header">
+      <span class="cmd">cat endpoints.json</span>
+      <span>all available endpoints — v1.0</span>
+    </div>
+    <div class="two-col">
+      <div class="window">
+        <div class="window-chrome">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <div class="window-title">account + business</div>
+        </div>
+        <div class="window-body">
+          <ul class="endpoints-list">
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Account/Login</span>
+              <span class="role-tag role-all">all</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Account/Register</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Account/RegisterOwner</span>
+              <span class="role-tag role-dev">dev</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Business</span>
+              <span class="role-tag role-dev">dev</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Business/{id}</span>
+              <span class="role-tag role-dev">dev</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Business</span>
+              <span class="role-tag role-dev">dev</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Business/hours/{id}</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Business/hours</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Categories</span>
+              <span class="role-tag role-all">all</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Categories</span>
+              <span class="role-tag role-dev">dev</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="window">
+        <div class="window-chrome">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <div class="window-title">services + bookings</div>
+        </div>
+        <div class="window-body">
+          <ul class="endpoints-list">
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Services</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Services/{id}</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Services</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Booking</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Booking/{id}</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-post">POST</span>
+              <span class="endpoint-path">/api/Booking</span>
+              <span class="role-tag role-user">user</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-put">PUT</span>
+              <span class="endpoint-path">/api/Booking/{id}/Confirm</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-put">PUT</span>
+              <span class="endpoint-path">/api/Booking/{id}/Cancel</span>
+              <span class="role-tag role-owner">owner</span>
+            </li>
+            <li class="endpoint-item">
+              <span class="method method-get">GET</span>
+              <span class="endpoint-path">/api/Booking/{id}/status</span>
+              <span class="role-tag role-user">user</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <span class="cmd">cat pricing.md</span>
+      <span>simple, transparent pricing — available on RapidAPI</span>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">basic</div>
+        <div class="plan-price">$0<span>/month</span></div>
+        <div class="plan-requests">100 requests / month</div>
+        <ul class="plan-features">
+          <li>all endpoints</li>
+          <li>JWT authentication</li>
+          <li>community support</li>
+        </ul>
+        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --free</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">most popular</div>
+        <div class="plan-name">pro</div>
+        <div class="plan-price">$29<span>/month</span></div>
+        <div class="plan-requests">10,000 requests / month</div>
+        <ul class="plan-features">
+          <li>all endpoints</li>
+          <li>JWT authentication</li>
+          <li>priority support</li>
+          <li>usage analytics</li>
+        </ul>
+        <button class="plan-btn featured-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --pro</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">ultra</div>
+        <div class="plan-price">$79<span>/month</span></div>
+        <div class="plan-requests">50,000 requests / month</div>
+        <ul class="plan-features">
+          <li>all endpoints</li>
+          <li>JWT authentication</li>
+          <li>priority support</li>
+          <li>usage analytics</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --ultra</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">mega</div>
+        <div class="plan-price">$199<span>/month</span></div>
+        <div class="plan-requests">500,000 requests / month</div>
+        <ul class="plan-features">
+          <li>all endpoints</li>
+          <li>JWT authentication</li>
+          <li>dedicated support</li>
+          <li>usage analytics</li>
+          <li>SLA guarantee</li>
+          <li>custom onboarding</li>
+        </ul>
+        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --mega</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="quickstart">
+  <div class="container">
+    <div class="section-header">
+      <span class="cmd">cat quickstart.md</span>
+      <span>get your first booking in minutes</span>
+    </div>
+    <div class="two-col">
+      <div>
+        <ul class="onboarding-steps">
+          <li class="onboarding-step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <div class="step-title">subscribe on RapidAPI</div>
+              <div class="step-desc">Choose a plan and subscribe. Contact us via the RapidAPI discussion board with your email to get your Developer account created.</div>
+            </div>
+          </li>
+          <li class="onboarding-step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <div class="step-title">login and get your token</div>
+              <div class="step-desc">Call <code>POST /api/Account/Login</code> with your credentials. You'll receive a JWT token valid for 8 hours.</div>
+            </div>
+          </li>
+          <li class="onboarding-step">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <div class="step-title">create your business</div>
+              <div class="step-desc">Call <code>POST /api/Business</code> to create your first business. Pass your token in the <code>Authorization</code> header.</div>
+            </div>
+          </li>
+          <li class="onboarding-step">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <div class="step-title">register a business owner</div>
+              <div class="step-desc">Call <code>POST /api/Account/RegisterOwner</code> to create a Business Owner account for your client.</div>
+            </div>
+          </li>
+          <li class="onboarding-step">
+            <div class="step-num">05</div>
+            <div class="step-content">
+              <div class="step-title">set up services and hours</div>
+              <div class="step-desc">Business Owner adds services via <code>POST /api/Services</code> and sets opening hours via <code>POST /api/Business/hours</code>.</div>
+            </div>
+          </li>
+          <li class="onboarding-step">
+            <div class="step-num">06</div>
+            <div class="step-content">
+              <div class="step-title">start taking bookings</div>
+              <div class="step-desc">Register customers and let them book via <code>POST /api/Booking</code>. The API handles all validation automatically.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="window">
+        <div class="window-chrome">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <div class="window-title">example — create a booking</div>
+        </div>
+        <div class="window-body">
+          <div class="code-block">
+            <pre><span class="code-comment">// POST /api/Booking</span>
+<span class="code-comment">// Authorization: Bearer &lt;token&gt;</span>
+
+{
+  <span class="code-key">"serviceID"</span>: <span class="code-value">1</span>,
+  <span class="code-key">"businessID"</span>: <span class="code-value">1</span>,
+  <span class="code-key">"date"</span>: <span class="code-string">"2026-04-01T10:00:00"</span>
+}
+
+<span class="code-comment">// Response — 201 Created</span>
+{
+  <span class="code-key">"bookingID"</span>: <span class="code-value">42</span>,
+  <span class="code-key">"status"</span>: <span class="code-string">"Pending"</span>,
+  <span class="code-key">"date"</span>: <span class="code-string">"2026-04-01T10:00:00"</span>,
+  <span class="code-key">"serviceID"</span>: <span class="code-value">1</span>,
+  <span class="code-key">"businessID"</span>: <span class="code-value">1</span>
+}</pre>
+          </div>
+          <div style="margin-top: 16px;">
+            <div style="color: var(--muted); font-size: 12px; margin-bottom: 8px;">automatic validation includes:</div>
+            <ul style="list-style: none;">
+              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ date is in the future</li>
+              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ service exists and is available</li>
+              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ business is open at requested time</li>
+              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ no overlapping bookings</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="cmd">cat roles.md</span>
+      <span>three role levels, clearly scoped</span>
+    </div>
+    <div class="flow-grid">
+      <div class="flow-step">
+        <div class="role" style="color: var(--purple);">Developer</div>
+        <div class="action">manages businesses + categories</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="role" style="color: var(--yellow);">BusinessOwner</div>
+        <div class="action">manages services, hours + bookings</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="role" style="color: var(--green);">User</div>
+        <div class="action">creates + manages own bookings</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<footer>
+  <div class="container">
+    <div style="color: var(--muted); font-size: 12px;">
+      <span style="color: var(--green);">business-booking-api</span> v1.0 — built with .NET 10 + PostgreSQL
+    </div>
+    <div class="footer-links">
+      <a href="https://rapidapi.com" target="_blank">rapidapi</a>
+      <a href="https://github.com" target="_blank">github</a>
+      <a href="#quickstart">docs</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
