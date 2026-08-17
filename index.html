@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+    <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vitor Ferreira — Resume</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
+    <title>Vitor Ferreira — Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      background: #0d1117;
-      color: #c9d1d9;
-      padding: 2rem;
-      font-size: 13px;
-      line-height: 1.7;
-    }
+        body {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 2rem;
+            font-size: 13px;
+            line-height: 1.7;
+        }
 
-    .resume-root {
-      max-width: 860px;
-      margin: 0 auto;
-    }
+        .resume-root {
+            max-width: 860px;
+            margin: 0 auto;
+        }
 
     .prompt { color: #3fb950; }
     .at { color: #58a6ff; }
@@ -38,76 +40,76 @@
     .pink { color: #f778ba; }
     .comment { color: #484f58; }
 
-    .header-bar {
-      border-bottom: 1px solid #21262d;
-      padding-bottom: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
+        .header-bar {
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .window-dots {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 1rem;
-    }
+        .window-dots {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 1rem;
+        }
     .dot { width: 12px; height: 12px; border-radius: 50%; }
     .dot-red { background: #f78166; }
     .dot-yellow { background: #e3b341; }
     .dot-green { background: #3fb950; }
 
-    .name-line {
-      font-size: 22px;
-      font-weight: 700;
-      color: #e6edf3;
-    }
+        .name-line {
+            font-size: 22px;
+            font-weight: 700;
+            color: #e6edf3;
+        }
 
-    .title-line {
-      font-size: 14px;
-      margin-top: 4px;
-    }
+        .title-line {
+            font-size: 14px;
+            margin-top: 4px;
+        }
 
-    .contact-line {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      font-size: 12px;
-    }
+        .contact-line {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 12px;
+        }
 
     .contact-item { color: #58a6ff; text-decoration: none; }
     .contact-item:hover { text-decoration: underline; }
 
     .section { margin-bottom: 1.8rem; }
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 1rem;
-      font-size: 12px;
-    }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+            font-size: 12px;
+        }
 
-    .section-header::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #21262d;
-    }
+            .section-header::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #21262d;
+            }
 
-    .job {
-      margin-bottom: 1.2rem;
-      padding-left: 16px;
-      border-left: 2px solid #21262d;
-    }
+        .job {
+            margin-bottom: 1.2rem;
+            padding-left: 16px;
+            border-left: 2px solid #21262d;
+        }
 
     .job:hover { border-left-color: #3fb950; }
 
-    .job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
 
     .job-title { color: #e6edf3; font-weight: 500; font-size: 13px; }
     .job-company { color: #58a6ff; }
@@ -118,48 +120,48 @@
     .job-bullets li { padding: 2px 0; font-size: 12px; color: #8b949e; }
     .job-bullets li::before { content: '▸ '; color: #3fb950; }
 
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-    }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
 
-    .skill-group {
-      background: #161b22;
-      border: 1px solid #21262d;
-      border-radius: 4px;
-      padding: 10px 12px;
-    }
+        .skill-group {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 4px;
+            padding: 10px 12px;
+        }
 
-    .skill-group-label {
-      font-size: 10px;
-      color: #6e7681;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
+        .skill-group-label {
+            font-size: 10px;
+            color: #6e7681;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
 
     .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
 
-    .tag {
-      font-size: 11px;
-      padding: 2px 7px;
-      border-radius: 3px;
-      border: 1px solid;
-    }
+        .tag {
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 3px;
+            border: 1px solid;
+        }
 
     .tag-lang { color: #d2a8ff; border-color: #3d2b7a; background: #1a0f3a; }
     .tag-fw   { color: #79c0ff; border-color: #0d4f8c; background: #0a1f36; }
     .tag-db   { color: #56d364; border-color: #0e4424; background: #051c0a; }
     .tag-tool { color: #e3b341; border-color: #5c4500; background: #211500; }
 
-    .project-card {
-      background: #161b22;
-      border: 1px solid #21262d;
-      border-radius: 4px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-    }
+        .project-card {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 4px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
 
     .project-card:hover { border-color: #3fb950; }
     .project-name { color: #e6edf3; font-weight: 500; }
@@ -168,29 +170,29 @@
 
     .edu-block { padding-left: 16px; border-left: 2px solid #21262d; }
 
-    .print-btn {
-      display: block;
-      margin: 0 0 1rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      padding: 8px 16px;
-      background: transparent;
-      border: 1px solid #3fb950;
-      color: #3fb950;
-      cursor: pointer;
-      border-radius: 3px;
-      float: right;
-    }
+        .print-btn {
+            display: block;
+            margin: 0 0 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #3fb950;
+            color: #3fb950;
+            cursor: pointer;
+            border-radius: 3px;
+            float: right;
+        }
     .print-btn:hover { background: #0e3620; }
 
-    .footer-line {
-      text-align: right;
-      margin-top: 1.5rem;
-      font-size: 11px;
-      color: #484f58;
-    }
+        .footer-line {
+            text-align: right;
+            margin-top: 1.5rem;
+            font-size: 11px;
+            color: #484f58;
+        }
 
-    @media print {
+        @media print {
       body { background: #fff; color: #111; padding: 1rem; }
       .dot, .print-btn, .window-dots { display: none; }
       .prompt { color: #090; }
@@ -214,14 +216,14 @@
       .job-location, .comment { color: #888; }
       .project-desc { color: #444; }
       .footer-line { color: #aaa; }
-    }
+        }
 
-    @media (max-width: 600px) {
+        @media (max-width: 600px) {
       body { padding: 1rem; }
       .job-header { flex-direction: column; }
       .skills-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+        }
+    </style>
 </head>
 <body>
 <div class="resume-root">
@@ -384,6 +386,7 @@
           <span class="tag tag-lang">VB.NET</span>
           <span class="tag tag-lang">JavaScript</span>
           <span class="tag tag-lang">SQL</span>
+            <span class="btn tag tag-lang" data-bs-toggle="modal" data-bs-target="#CssCertificationModal" role="button" title="Click to view certification">CSS</span>
         </div>
       </div>
       <div class="skill-group">
@@ -393,6 +396,8 @@
           <span class="tag tag-fw">.NET WebForms</span>
           <span class="tag tag-fw">Web APIs</span>
           <span class="tag tag-fw">REST</span>
+          <span class="btn tag tag-fw" data-bs-toggle="modal" data-bs-target="#BootstrapCertificationModal" role="button" title="Click to view certification">Bootstrap</span>
+
         </div>
       </div>
       <div class="skill-group">
@@ -409,10 +414,10 @@
       <div class="skill-group">
         <div class="skill-group-label">Tools</div>
         <div class="skill-tags">
-          <span class="tag tag-tool">Git</span>
-          <span class="tag tag-tool">Visual Studio</span>
-          <span class="tag tag-tool">VS Code</span>
-          <span class="tag tag-tool">Postman</span>
+            <span class="btn tag tag-tool" data-bs-toggle="modal" data-bs-target="#gitCertificationModal" role="button" title="Click to view certification">Git</span>
+            <span class="tag tag-tool">Visual Studio</span>
+            <span class="tag tag-tool">VS Code</span>
+            <span class="tag tag-tool">Postman</span>
         </div>
       </div>
     </div>
@@ -492,3 +497,44 @@
 </div>
 </body>
 </html>
+
+<!-- Modals -->
+ <div class="modal fade" id="gitCertificationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #161b22; border-color: #21262d;">
+            <div class="modal-header" style="border-color: #21262d;">
+                <h5 class="modal-title" style="color: #e6edf3;">Git Certification</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <img src="images/Git_Certificate.png" alt="Git Certification" style="width: 100%; max-width: 800px;">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CssCertificationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #161b22; border-color: #21262d;">
+            <div class="modal-header" style="border-color: #21262d;">
+                <h5 class="modal-title" style="color: #e6edf3;">Css Certification</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <img src="images/Css_Certificate.png" alt="Css Certification" style="width: 100%; max-width: 800px;">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="BootstrapCertificationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #161b22; border-color: #21262d;">
+            <div class="modal-header" style="border-color: #21262d;">
+                <h5 class="modal-title" style="color: #e6edf3;">Bootstrap Certification</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <img src="images/Bootstrap_Certificate.png" alt="Bootstrap Certification" style="width: 100%; max-width: 800px;">
+            </div>
+        </div>
+    </div>
+</div>
