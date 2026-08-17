@@ -1,571 +1,947 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Business Booking API</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0d1117;
-    --bg-card: #161b22;
-    --border: #21262d;
-    --text: #c9d1d9;
-    --muted: #6e7681;
-    --green: #3fb950;
-    --blue: #58a6ff;
-    --purple: #d2a8ff;
-    --red: #ff7b72;
-    --yellow: #e3b341;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    line-height: 1.7;
-  }
-
-  a { color: var(--blue); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-
-  .window {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .window-chrome {
-    background: #1c2128;
-    border-bottom: 1px solid var(--border);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .dot { width: 12px; height: 12px; border-radius: 50%; }
-  .dot-red { background: #ff5f57; }
-  .dot-yellow { background: #febc2e; }
-  .dot-green { background: #28c840; }
-
-  .window-title {
-    flex: 1;
-    text-align: center;
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  .window-body { padding: 24px; }
-
-  .cmd { color: var(--green); }
-  .cmd::before { content: '$ '; }
-
-  .section-header {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  .section-header .cmd { font-size: 15px; color: var(--green); display: block; margin-bottom: 4px; }
-
-  nav {
-    border-bottom: 1px solid var(--border);
-    padding: 12px 0;
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 100;
-  }
-
-  nav .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .nav-logo { color: var(--green); font-size: 13px; font-weight: 700; }
-  .nav-logo span { color: var(--muted); }
-
-  .nav-links { display: flex; gap: 24px; }
-  .nav-links a { color: var(--muted); font-size: 12px; }
-  .nav-links a:hover { color: var(--text); text-decoration: none; }
-
-  section { padding: 64px 0; }
-
-  .hero { padding: 80px 0 64px; }
-
-  .hero-window .window-body { padding: 32px; }
-
-  .hero-prompt { margin-bottom: 24px; }
-  .hero-prompt .line { margin-bottom: 8px; }
-  .hero-prompt .line .cmd-prefix { color: var(--green); }
-  .hero-prompt .line .cmd-text { color: var(--text); }
-
-  .hero-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--purple);
-    margin-bottom: 8px;
-    line-height: 1.3;
-  }
-
-  .hero-subtitle {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 32px;
-    max-width: 600px;
-  }
-
-  .hero-subtitle span { color: var(--yellow); }
-
-  .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
-
-  .btn {
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .btn-primary {
-    background: var(--green);
-    color: #0d1117;
-    border-color: var(--green);
-    font-weight: 700;
-  }
-
-  .btn-primary:hover { background: #45c858; text-decoration: none; }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--text);
-  }
-
-  .btn-secondary:hover { background: var(--bg-card); text-decoration: none; }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-top: 32px;
-  }
-
-  .stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 16px;
-  }
-
-  .stat-value { font-size: 24px; font-weight: 700; color: var(--green); }
-  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-  }
-
-  .feature-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px;
-    transition: border-color 0.2s;
-  }
-
-  .feature-card:hover { border-color: var(--green); }
-
-  .feature-icon { color: var(--purple); font-size: 18px; margin-bottom: 12px; }
-  .feature-title { color: var(--text); font-weight: 700; margin-bottom: 8px; font-size: 13px; }
-  .feature-desc { color: var(--muted); font-size: 12px; line-height: 1.6; }
-
-  .endpoints-list { list-style: none; }
-
-  .endpoint-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    border-left: 2px solid var(--border);
-    margin-bottom: 6px;
-    transition: border-color 0.2s;
-  }
-
-  .endpoint-item:hover { border-left-color: var(--green); }
-
-  .method {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    min-width: 48px;
-    text-align: center;
-  }
-
-  .method-get { background: rgba(88, 166, 255, 0.15); color: var(--blue); }
-  .method-post { background: rgba(63, 185, 80, 0.15); color: var(--green); }
-  .method-put { background: rgba(227, 179, 65, 0.15); color: var(--yellow); }
-  .method-delete { background: rgba(255, 123, 114, 0.15); color: var(--red); }
-
-  .endpoint-path { color: var(--text); font-size: 13px; }
-  .endpoint-desc { color: var(--muted); font-size: 12px; margin-left: auto; }
-
-  .role-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-left: 8px;
-  }
-
-  .role-dev { background: rgba(210, 168, 255, 0.15); color: var(--purple); }
-  .role-owner { background: rgba(227, 179, 65, 0.15); color: var(--yellow); }
-  .role-user { background: rgba(63, 185, 80, 0.15); color: var(--green); }
-  .role-all { background: rgba(198, 209, 217, 0.15); color: var(--muted); }
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-  }
-
-  .pricing-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 24px;
-    transition: border-color 0.2s;
-  }
-
-  .pricing-card:hover { border-color: var(--green); }
-  .pricing-card.featured { border-color: var(--green); }
-
-  .pricing-badge {
-    font-size: 11px;
-    color: #0d1117;
-    background: var(--green);
-    padding: 2px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-bottom: 12px;
-    font-weight: 700;
-  }
-
-  .plan-name { color: var(--purple); font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-  .plan-price { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .plan-price span { font-size: 14px; color: var(--muted); font-weight: 400; }
-  .plan-requests { color: var(--yellow); font-size: 12px; margin-bottom: 16px; }
-
-  .plan-features { list-style: none; }
-  .plan-features li {
-    font-size: 12px;
-    color: var(--muted);
-    padding: 4px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .plan-features li::before { content: '+ '; color: var(--green); }
-  .plan-features li:last-child { border-bottom: none; }
-
-  .plan-btn {
-    display: block;
-    text-align: center;
-    margin-top: 16px;
-    padding: 8px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    font-size: 12px;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    cursor: pointer;
-    background: transparent;
-    width: 100%;
-    transition: all 0.2s;
-  }
-
-  .plan-btn:hover { border-color: var(--green); color: var(--green); }
-  .plan-btn.featured-btn { border-color: var(--green); color: var(--green); }
-
-  .onboarding-steps { list-style: none; }
-
-  .onboarding-step {
-    display: flex;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .onboarding-step:last-child { border-bottom: none; }
-
-  .step-num {
-    color: var(--green);
-    font-weight: 700;
-    min-width: 24px;
-    font-size: 13px;
-  }
-
-  .step-content {}
-  .step-title { color: var(--text); font-weight: 700; font-size: 13px; margin-bottom: 4px; }
-  .step-desc { color: var(--muted); font-size: 12px; }
-  .step-desc code { color: var(--blue); background: rgba(88, 166, 255, 0.1); padding: 1px 6px; border-radius: 2px; }
-
-  .code-block {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 16px;
-    margin-top: 16px;
-    overflow-x: auto;
-  }
-
-  .code-block pre {
-    font-size: 12px;
-    color: var(--text);
-    white-space: pre;
-  }
-
-  .code-comment { color: var(--muted); }
-  .code-key { color: var(--blue); }
-  .code-value { color: var(--green); }
-  .code-string { color: var(--yellow); }
-
-  .flow-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 8px;
-    align-items: center;
-  }
-
-  .flow-step {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 12px;
-    text-align: center;
-    font-size: 11px;
-  }
-
-  .flow-step .role { color: var(--purple); font-weight: 700; margin-bottom: 4px; }
-  .flow-step .action { color: var(--muted); }
-  .flow-arrow { text-align: center; color: var(--green); font-size: 18px; }
-
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 0;
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  footer .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-links { display: flex; gap: 24px; }
-
-  .section-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0;
-  }
-
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  @media (max-width: 640px) {
-    .two-col { grid-template-columns: 1fr; }
-    .endpoint-desc { display: none; }
-    .nav-links { display: none; }
-    .hero-title { font-size: 22px; }
-  }
-
-  @media print {
-    body { background: #fff; color: #000; font-family: Arial, sans-serif; }
-    nav { display: none; }
-    .window { background: #f8f8f8; border: 1px solid #ddd; }
-    .window-chrome { background: #eee; border-bottom: 1px solid #ddd; }
-    .dot-red { background: #ff5f57; }
-    .dot-yellow { background: #febc2e; }
-    .dot-green { background: #28c840; }
-    .window-title { color: #666; }
-    .cmd { color: #1a7f37; }
-    .section-header .cmd { color: #1a7f37; }
-    .hero-title { color: #6e40c9; }
-    .hero-subtitle { color: #555; }
-    .hero-subtitle span { color: #9a6700; }
-    .stat-card { background: #f0f0f0; border-color: #ddd; }
-    .stat-value { color: #1a7f37; }
-    .stat-label { color: #666; }
-    .feature-card { background: #f8f8f8; border-color: #ddd; }
-    .feature-icon { color: #6e40c9; }
-    .feature-title { color: #000; }
-    .feature-desc { color: #555; }
-    .endpoint-item { border-left-color: #ddd; }
-    .method-get { background: #dbeafe; color: #1d4ed8; }
-    .method-post { background: #dcfce7; color: #15803d; }
-    .method-put { background: #fef9c3; color: #854d0e; }
-    .method-delete { background: #fee2e2; color: #991b1b; }
-    .endpoint-path { color: #000; }
-    .endpoint-desc { color: #555; }
-    .role-dev { background: #ede9fe; color: #6d28d9; }
-    .role-owner { background: #fef9c3; color: #854d0e; }
-    .role-user { background: #dcfce7; color: #15803d; }
-    .role-all { background: #f3f4f6; color: #555; }
-    .pricing-card { background: #f8f8f8; border-color: #ddd; }
-    .plan-name { color: #6e40c9; }
-    .plan-price { color: #000; }
-    .plan-requests { color: #9a6700; }
-    .plan-features li { color: #555; border-bottom-color: #eee; }
-    .plan-features li::before { color: #1a7f37; }
-    .code-block { background: #f0f0f0; border-color: #ddd; }
-    .code-block pre { color: #000; }
-    .code-comment { color: #666; }
-    .code-key { color: #1d4ed8; }
-    .code-value { color: #15803d; }
-    .code-string { color: #9a6700; }
-    .flow-step { background: #f0f0f0; border-color: #ddd; }
-    .flow-step .role { color: #6e40c9; }
-    .flow-step .action { color: #555; }
-    .flow-arrow { color: #1a7f37; }
-    .onboarding-step { border-bottom-color: #eee; }
-    .step-title { color: #000; }
-    .step-desc { color: #555; }
-    .step-desc code { color: #1d4ed8; background: #dbeafe; }
-    .section-divider { border-top-color: #ddd; }
-    footer { border-top-color: #ddd; color: #555; }
-    .btn { display: none; }
-    .plan-btn { display: none; }
-    a { color: #1d4ed8; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Management Tool — Bookings, Simplified</title>
+  <style>
+    :root {
+      --bg: #0a0e27;
+      --surface: #141829;
+      --border: #1f2844;
+      --text: #e8ecf1;
+      --muted: #9ca3af;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, #0f1535 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navigation */
+    nav {
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      background: rgba(10, 14, 39, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+    }
+
+    .nav-logo {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo span {
+      color: var(--accent-blue);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--accent-blue);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+      border-color: var(--accent-blue);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-card {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+    }
+
+    /* Paths Section */
+    .paths-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .section-label {
+      display: block;
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .section-desc {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 500px;
+    }
+
+    .paths-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .path-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s;
+    }
+
+    .path-card:hover {
+      border-color: var(--accent-blue);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+      transform: translateY(-4px);
+    }
+
+    .path-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+
+    .path-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .path-desc {
+      color: var(--muted);
+      margin-bottom: 24px;
+      flex-grow: 1;
+      line-height: 1.7;
+    }
+
+    .path-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .path-features li {
+      padding: 8px 0;
+      color: var(--muted);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .path-features li:before {
+      content: "✓";
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    .path-cta {
+      margin-top: auto;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 80px 20px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--accent-blue);
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Endpoints Section */
+    .endpoints-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    .window {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .window-chrome {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      background: #ff5f56;
+    }
+
+    .dot-yellow {
+      background: #ffbd2e;
+    }
+
+    .dot-green {
+      background: #27c93f;
+    }
+
+    .window-title {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 8px;
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    .window-body {
+      padding: 24px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .endpoints-list {
+      list-style: none;
+    }
+
+    .endpoint-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .endpoint-item:last-child {
+      border-bottom: none;
+    }
+
+    .method {
+      font-weight: 700;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 3px;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .method-get {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .method-post {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent-blue);
+    }
+
+    .method-put {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .endpoint-path {
+      color: var(--text);
+      font-size: 12px;
+      flex-grow: 1;
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    .role-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .role-all {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--accent-purple);
+    }
+
+    .role-dev {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent-blue);
+    }
+
+    .role-owner {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .role-user {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+      padding: 80px 20px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent-blue);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      transform: scale(1.05);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .plan-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: capitalize;
+    }
+
+    .plan-price {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+    }
+
+    .plan-price span {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .plan-requests {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 32px;
+      flex-grow: 1;
+    }
+
+    .plan-features li {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+
+    .plan-btn {
+      padding: 10px 16px;
+      border-radius: 6px;
+      background: var(--border);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .plan-btn:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    .featured-btn {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    .featured-btn:hover {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+    }
+
+    /* Quickstart Section */
+    .quickstart-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+    }
+
+    .onboarding-steps {
+      list-style: none;
+    }
+
+    .onboarding-step {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      min-width: 40px;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .step-desc code {
+      background: var(--border);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--accent-blue);
+    }
+
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    .code-block pre {
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .code-comment {
+      color: var(--muted);
+    }
+
+    .code-key {
+      color: var(--accent-blue);
+    }
+
+    .code-value {
+      color: var(--accent-purple);
+    }
+
+    .code-string {
+      color: var(--accent-green);
+    }
+
+    /* Roles Section */
+    .roles-section {
+      padding: 80px 20px;
+    }
+
+    .flow-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .flow-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 32px;
+      text-align: center;
+      min-width: 200px;
+    }
+
+    .role {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .action {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .flow-arrow {
+      font-size: 24px;
+      color: var(--accent-blue);
+      font-weight: bold;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .section-title {
+        font-size: 28px;
+      }
+
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .flow-grid {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .flow-arrow {
+        transform: rotate(90deg);
+      }
+
+      .paths-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <nav>
   <div class="container">
-    <div class="nav-logo">business-booking-api<span>.io</span></div>
+    <div class="nav-logo">business-management<span>.tool</span></div>
     <div class="nav-links">
+      <a href="#paths">for businesses</a>
+      <a href="#paths">for developers</a>
       <a href="#features">features</a>
-      <a href="#endpoints">endpoints</a>
       <a href="#pricing">pricing</a>
-      <a href="#quickstart">quickstart</a>
-      <a href="https://rapidapi.com" target="_blank">rapidapi</a>
+      <a href="#quickstart">docs</a>
     </div>
   </div>
 </nav>
 
 <section class="hero">
   <div class="container">
-    <div class="window hero-window">
-      <div class="window-chrome">
-        <div class="dot dot-red"></div>
-        <div class="dot dot-yellow"></div>
-        <div class="dot dot-green"></div>
-        <div class="window-title">business-booking-api ~ terminal</div>
+    <div class="hero-content">
+      <div class="hero-badge">all-in-one booking platform</div>
+      <h1>Bookings <span class="highlight">simplified</span></h1>
+      <p>Whether you're a business owner wanting a ready-made booking site or a developer building a custom experience, we handle the complex scheduling logic. Manage services, availability, customers and bookings—with automatic overlap detection and business hours enforcement built in.</p>
+      
+      <div class="hero-buttons">
+        <a href="#paths" class="btn btn-primary">Get started</a>
+        <a href="#quickstart" class="btn btn-secondary">See the docs</a>
       </div>
-      <div class="window-body">
-        <div class="hero-prompt">
-          <div class="line"><span class="cmd-prefix">$ </span><span class="cmd-text">curl -X GET https://businessbookingapi.up.railway.app/api/Booking \</span></div>
-          <div class="line" style="padding-left:16px; color: var(--muted);">-H "Authorization: Bearer &lt;your_token&gt;"</div>
-          <div class="line" style="margin-top:8px; color: var(--green);">✓ 200 OK — 3 bookings returned in 42ms</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">2</div>
+          <div class="stat-label">Deployment options</div>
         </div>
-        <h1 class="hero-title">Business Booking API</h1>
-        <p class="hero-subtitle">A developer-first REST API for managing <span>bookings, businesses, services</span> and <span>availability</span>. Ship faster. Focus on your front end.</p>
-        <div class="hero-buttons">
-          <a href="https://rapidapi.com" target="_blank" class="btn btn-primary">$ subscribe --plan basic</a>
-          <a href="#quickstart" class="btn btn-secondary">$ cat quickstart.md</a>
+        <div class="stat-card">
+          <div class="stat-value">20+</div>
+          <div class="stat-label">API endpoints</div>
         </div>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value">20+</div>
-            <div class="stat-label">endpoints</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">3</div>
-            <div class="stat-label">role levels</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">JWT</div>
-            <div class="stat-label">authentication</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">99.9%</div>
-            <div class="stat-label">uptime target</div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Role levels</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">99.9%</div>
+          <div class="stat-label">Uptime target</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="section-divider">
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
 
-<section id="features">
+<section class="paths-section" id="paths">
   <div class="container">
     <div class="section-header">
-      <span class="cmd">ls ./features/</span>
-      <span>everything you need to build a booking system</span>
+      <span class="section-label">Two ways to use</span>
+      <h2 class="section-title">Choose your path</h2>
+      <p class="section-desc">Pick the solution that fits your business model. Both run on the same core booking engine.</p>
     </div>
+
+    <div class="paths-grid">
+      <!-- Website Path -->
+      <div class="path-card">
+        <div class="path-icon">🌐</div>
+        <h3 class="path-title">Hosted Website</h3>
+        <p class="path-desc">A fully hosted, done-for-you booking site. Perfect for salon owners, trainers, consultants and any service business ready to start taking bookings immediately.</p>
+        
+        <ul class="path-features">
+          <li>Personalized business page</li>
+          <li>Customer self-service portal</li>
+          <li>Booking agenda for owners</li>
+          <li>Automated email reminders</li>
+          <li>Recurring bookings support</li>
+        </ul>
+
+        <div class="path-cta">
+          <a href="#" class="btn btn-primary" style="width: 100%; text-align: center;">Browse plans</a>
+        </div>
+      </div>
+
+      <!-- API Path -->
+      <div class="path-card">
+        <div class="path-icon">⚙️</div>
+        <h3 class="path-title">Developer API</h3>
+        <p class="path-desc">Full programmatic control via REST API. Build your own custom booking experience, integrate into your existing app, or white-label the entire system.</p>
+        
+        <ul class="path-features">
+          <li>REST API with 20+ endpoints</li>
+          <li>JWT authentication</li>
+          <li>Role-based access control</li>
+          <li>Flexible business isolation</li>
+          <li>Pay-as-you-go billing</li>
+        </ul>
+
+        <div class="path-cta">
+          <a href="#quickstart" class="btn btn-secondary" style="width: 100%; text-align: center;">Start building</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
+
+<section class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Core capabilities</span>
+      <h2 class="section-title">Built for service businesses</h2>
+      <p class="section-desc">Whether you use our website or integrate the API, these features power every booking.</p>
+    </div>
+
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">//</div>
-        <div class="feature-title">multi-business management</div>
-        <div class="feature-desc">Manage unlimited businesses under a single Developer account. Each business is fully isolated — bookings, services and users are scoped automatically.</div>
+        <div class="feature-icon">🏢</div>
+        <div class="feature-title">Multi-business management</div>
+        <div class="feature-desc">Manage unlimited businesses under a single account. Each business is fully isolated with its own services, bookings, and users.</div>
       </div>
+
       <div class="feature-card">
-        <div class="feature-icon">//</div>
-        <div class="feature-title">smart booking validation</div>
-        <div class="feature-desc">Built-in overlap detection, business hours checking and service availability validation. Bad data never reaches your database.</div>
+        <div class="feature-icon">✓</div>
+        <div class="feature-title">Smart booking validation</div>
+        <div class="feature-desc">Built-in overlap detection, business hours checking, and service availability validation. Bad data never reaches your database.</div>
       </div>
+
       <div class="feature-card">
-        <div class="feature-icon">//</div>
-        <div class="feature-title">role-based access control</div>
-        <div class="feature-desc">Three role levels — Developer, BusinessOwner and User — each with carefully scoped permissions. No overprivileged tokens.</div>
+        <div class="feature-icon">🔐</div>
+        <div class="feature-title">Role-based access control</div>
+        <div class="feature-desc">Three role levels with carefully scoped permissions. Developers, Business Owners and Customers each have exactly the access they need.</div>
       </div>
+
       <div class="feature-card">
-        <div class="feature-icon">//</div>
-        <div class="feature-title">business hours engine</div>
-        <div class="feature-desc">Set opening and closing times per day of the week. Mark days as closed. The API enforces these rules on every booking attempt automatically.</div>
+        <div class="feature-icon">⏰</div>
+        <div class="feature-title">Business hours engine</div>
+        <div class="feature-desc">Set opening and closing times per day of the week. Mark days as closed. The API enforces these rules on every booking attempt.</div>
       </div>
+
       <div class="feature-card">
-        <div class="feature-icon">//</div>
-        <div class="feature-title">service configuration</div>
-        <div class="feature-desc">Define services with custom names, pricing and durations. Duration is used by the booking engine to calculate slot availability and prevent overlap.</div>
+        <div class="feature-icon">🛠</div>
+        <div class="feature-title">Service configuration</div>
+        <div class="feature-desc">Define services with custom names, pricing and durations. Duration is used to calculate slot availability and prevent overlap.</div>
       </div>
+
       <div class="feature-card">
-        <div class="feature-icon">//</div>
-        <div class="feature-title">booking lifecycle</div>
-        <div class="feature-desc">Full booking lifecycle support — create, confirm and cancel. Status tracking built in. Business Owners can confirm or cancel. Customers can cancel their own.</div>
+        <div class="feature-icon">📋</div>
+        <div class="feature-title">Full booking lifecycle</div>
+        <div class="feature-desc">Create, confirm, and cancel bookings with built-in status tracking. Business Owners confirm or cancel. Customers manage their own.</div>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="section-divider">
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
 
-<section id="endpoints">
+<section class="endpoints-section" id="endpoints">
   <div class="container">
     <div class="section-header">
-      <span class="cmd">cat endpoints.json</span>
-      <span>all available endpoints — v1.0</span>
+      <span class="section-label">For developers</span>
+      <h2 class="section-title">API endpoints</h2>
+      <p class="section-desc">All endpoints available in v1.0</p>
     </div>
+
     <div class="two-col">
       <div class="window">
         <div class="window-chrome">
@@ -629,6 +1005,7 @@
           </ul>
         </div>
       </div>
+
       <div class="window">
         <div class="window-chrome">
           <div class="dot dot-red"></div>
@@ -690,125 +1067,138 @@
   </div>
 </section>
 
-<hr class="section-divider">
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
 
-<section id="pricing">
+<section class="pricing-section" id="pricing">
   <div class="container">
     <div class="section-header">
-      <span class="cmd">cat pricing.md</span>
-      <span>simple, transparent pricing — available on RapidAPI</span>
+      <span class="section-label">API pricing</span>
+      <h2 class="section-title">Simple, transparent billing</h2>
+      <p class="section-desc">Pay only for what you use. All plans include full API access.</p>
     </div>
+
     <div class="pricing-grid">
       <div class="pricing-card">
-        <div class="plan-name">basic</div>
+        <div class="plan-name">Basic</div>
         <div class="plan-price">$0<span>/month</span></div>
         <div class="plan-requests">100 requests / month</div>
         <ul class="plan-features">
-          <li>all endpoints</li>
-          <li>JWT authentication</li>
-          <li>community support</li>
+          <li>✓ All endpoints</li>
+          <li>✓ JWT authentication</li>
+          <li>✓ Community support</li>
         </ul>
-        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --free</button>
+        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">Subscribe</button>
       </div>
+
       <div class="pricing-card featured">
         <div class="pricing-badge">most popular</div>
-        <div class="plan-name">pro</div>
+        <div class="plan-name">Pro</div>
         <div class="plan-price">$29<span>/month</span></div>
         <div class="plan-requests">10,000 requests / month</div>
         <ul class="plan-features">
-          <li>all endpoints</li>
-          <li>JWT authentication</li>
-          <li>priority support</li>
-          <li>usage analytics</li>
+          <li>✓ All endpoints</li>
+          <li>✓ JWT authentication</li>
+          <li>✓ Priority support</li>
+          <li>✓ Usage analytics</li>
         </ul>
-        <button class="plan-btn featured-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --pro</button>
+        <button class="plan-btn featured-btn" onclick="window.open('https://rapidapi.com','_blank')">Subscribe</button>
       </div>
+
       <div class="pricing-card">
-        <div class="plan-name">ultra</div>
+        <div class="plan-name">Ultra</div>
         <div class="plan-price">$79<span>/month</span></div>
         <div class="plan-requests">50,000 requests / month</div>
         <ul class="plan-features">
-          <li>all endpoints</li>
-          <li>JWT authentication</li>
-          <li>priority support</li>
-          <li>usage analytics</li>
-          <li>SLA guarantee</li>
+          <li>✓ All endpoints</li>
+          <li>✓ JWT authentication</li>
+          <li>✓ Priority support</li>
+          <li>✓ Usage analytics</li>
+          <li>✓ SLA guarantee</li>
         </ul>
-        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --ultra</button>
+        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">Subscribe</button>
       </div>
+
       <div class="pricing-card">
-        <div class="plan-name">mega</div>
+        <div class="plan-name">Mega</div>
         <div class="plan-price">$199<span>/month</span></div>
         <div class="plan-requests">500,000 requests / month</div>
         <ul class="plan-features">
-          <li>all endpoints</li>
-          <li>JWT authentication</li>
-          <li>dedicated support</li>
-          <li>usage analytics</li>
-          <li>SLA guarantee</li>
-          <li>custom onboarding</li>
+          <li>✓ All endpoints</li>
+          <li>✓ JWT authentication</li>
+          <li>✓ Dedicated support</li>
+          <li>✓ Usage analytics</li>
+          <li>✓ SLA guarantee</li>
+          <li>✓ Custom onboarding</li>
         </ul>
-        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">$ subscribe --mega</button>
+        <button class="plan-btn" onclick="window.open('https://rapidapi.com','_blank')">Subscribe</button>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="section-divider">
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
 
-<section id="quickstart">
+<section class="quickstart-section" id="quickstart">
   <div class="container">
     <div class="section-header">
-      <span class="cmd">cat quickstart.md</span>
-      <span>get your first booking in minutes</span>
+      <span class="section-label">Developer guide</span>
+      <h2 class="section-title">Get your first booking in minutes</h2>
+      <p class="section-desc">Follow these steps to set up and start taking bookings via the API</p>
     </div>
+
     <div class="two-col">
       <div>
         <ul class="onboarding-steps">
           <li class="onboarding-step">
             <div class="step-num">01</div>
             <div class="step-content">
-              <div class="step-title">subscribe on RapidAPI</div>
+              <div class="step-title">Subscribe on RapidAPI</div>
               <div class="step-desc">Choose a plan and subscribe. Contact us via the RapidAPI discussion board with your email to get your Developer account created.</div>
             </div>
           </li>
+
           <li class="onboarding-step">
             <div class="step-num">02</div>
             <div class="step-content">
-              <div class="step-title">login and get your token</div>
+              <div class="step-title">Login and get your token</div>
               <div class="step-desc">Call <code>POST /api/Account/Login</code> with your credentials. You'll receive a JWT token valid for 8 hours.</div>
             </div>
           </li>
+
           <li class="onboarding-step">
             <div class="step-num">03</div>
             <div class="step-content">
-              <div class="step-title">create your business</div>
+              <div class="step-title">Create your business</div>
               <div class="step-desc">Call <code>POST /api/Business</code> to create your first business. Pass your token in the <code>Authorization</code> header.</div>
             </div>
           </li>
+
           <li class="onboarding-step">
             <div class="step-num">04</div>
             <div class="step-content">
-              <div class="step-title">register a business owner</div>
+              <div class="step-title">Register a business owner</div>
               <div class="step-desc">Call <code>POST /api/Account/RegisterOwner</code> to create a Business Owner account for your client.</div>
             </div>
           </li>
+
           <li class="onboarding-step">
             <div class="step-num">05</div>
             <div class="step-content">
-              <div class="step-title">set up services and hours</div>
+              <div class="step-title">Set up services and hours</div>
               <div class="step-desc">Business Owner adds services via <code>POST /api/Services</code> and sets opening hours via <code>POST /api/Business/hours</code>.</div>
             </div>
           </li>
+
           <li class="onboarding-step">
             <div class="step-num">06</div>
             <div class="step-content">
-              <div class="step-title">start taking bookings</div>
+              <div class="step-title">Start taking bookings</div>
               <div class="step-desc">Register customers and let them book via <code>POST /api/Booking</code>. The API handles all validation automatically.</div>
             </div>
           </li>
         </ul>
       </div>
+
       <div class="window">
         <div class="window-chrome">
           <div class="dot dot-red"></div>
@@ -839,10 +1229,10 @@
           <div style="margin-top: 16px;">
             <div style="color: var(--muted); font-size: 12px; margin-bottom: 8px;">automatic validation includes:</div>
             <ul style="list-style: none;">
-              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ date is in the future</li>
-              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ service exists and is available</li>
-              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ business is open at requested time</li>
-              <li style="font-size: 12px; color: var(--green); padding: 3px 0;">✓ no overlapping bookings</li>
+              <li style="font-size: 12px; color: var(--success); padding: 3px 0;">✓ date is in the future</li>
+              <li style="font-size: 12px; color: var(--success); padding: 3px 0;">✓ service exists and is available</li>
+              <li style="font-size: 12px; color: var(--success); padding: 3px 0;">✓ business is open at requested time</li>
+              <li style="font-size: 12px; color: var(--success); padding: 3px 0;">✓ no overlapping bookings</li>
             </ul>
           </div>
         </div>
@@ -851,45 +1241,44 @@
   </div>
 </section>
 
-<hr class="section-divider">
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
 
-<section>
+<section class="roles-section">
   <div class="container">
     <div class="section-header">
-      <span class="cmd">cat roles.md</span>
-      <span>three role levels, clearly scoped</span>
+      <span class="section-label">How it works</span>
+      <h2 class="section-title">Role-based access flow</h2>
     </div>
+
     <div class="flow-grid">
       <div class="flow-step">
-        <div class="role" style="color: var(--purple);">Developer</div>
-        <div class="action">manages businesses + categories</div>
+        <div class="role" style="color: var(--accent-blue);">Developer</div>
+        <div class="action">creates businesses</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
-        <div class="role" style="color: var(--yellow);">BusinessOwner</div>
-        <div class="action">manages services, hours + bookings</div>
+        <div class="role" style="color: #f59e0b;">BusinessOwner</div>
+        <div class="action">manages services & bookings</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
-        <div class="role" style="color: var(--green);">User</div>
-        <div class="action">creates + manages own bookings</div>
+        <div class="role" style="color: var(--accent-green);">User</div>
+        <div class="action">creates their bookings</div>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="section-divider">
+<hr style="border: none; border-top: 1px solid var(--border); margin: 0;">
 
 <footer>
-  <div class="container">
-    <div style="color: var(--muted); font-size: 12px;">
-      <span style="color: var(--green);">business-booking-api</span> v1.0 — built with .NET 10 + PostgreSQL
-    </div>
-    <div class="footer-links">
-      <a href="https://rapidapi.com" target="_blank">rapidapi</a>
-      <a href="https://github.com" target="_blank">github</a>
-      <a href="#quickstart">docs</a>
-    </div>
+  <div style="color: var(--muted); font-size: 12px; margin-bottom: 16px;">
+    <span style="color: var(--accent-blue);">business-management-tool</span> v1.0 — built with .NET 10 + PostgreSQL
+  </div>
+  <div class="footer-links">
+    <a href="https://rapidapi.com" target="_blank">RapidAPI</a>
+    <a href="https://github.com" target="_blank">GitHub</a>
+    <a href="#quickstart">Documentation</a>
   </div>
 </footer>
 
